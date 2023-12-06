@@ -9,179 +9,178 @@ import (
 	"strings"
 )
 
-var test_1_1 = "1abc2"
-var test_1_2 = "pqr3stu8vwx"
-var test_1_3 = "a1b2c3d4e5f"
-var test_1_4 = "treb7uchet"
+const (
+	test11 = "1abc2"
+	test12 = "pqr3stu8vwx"
+	test13 = "a1b2c3d4e5f"
+	test14 = "treb7uchet"
 
-var test_2_1 = "two1nine"
-var test_2_2 = "eightwothree"
-var test_2_3 = "abcone2threexyz"
-var test_2_4 = "xtwone3four"
-var test_2_5 = "4nineeightseven2"
-var test_2_6 = "zoneight234"
-var test_2_7 = "7pqrstsixteen"
+	test21 = "two1nine"
+	test22 = "eightwothree"
+	test23 = "abcone2threexyz"
+	test24 = "xtwone3four"
+	test25 = "4nineeightseven2"
+	test26 = "zoneight234"
+	test27 = "7pqrstsixteen"
 
-var test_file string = "input.txt"
+	testFile = "input.txt"
+)
 
-func get_first_last_digits(input_text string) (int, int) {
-	var first_digit int
-	var last_digit int
-	var first_digit_found = false
 
-	for _, character := range input_text {
+
+func getFirstLastDigits(inputText string) (int, int) {
+	var firstDigit int
+	var lastDigit int
+	var firstDigitFound = false
+
+	for _, character := range inputText {
 		if digit, err := strconv.Atoi(string(character)); err == nil {
-			if !first_digit_found {
-				first_digit_found = true
-				first_digit = digit
+			if !firstDigitFound {
+				firstDigitFound = true
+				firstDigit = digit
 			}
-			last_digit = digit
+			lastDigit = digit
 		}
 	}
 
-	return first_digit, last_digit
+	return firstDigit, lastDigit
 }
 
-func get_first_last_digits_with_text(input_text string) (int, int) {
-	var first_digit int
-	var last_digit int
-	var first_digit_found = false
+func getFirstLastDigitsWithText(inputText string) (int, int) {
+	var firstDigit int
+	var lastDigit int
+	var firstDigitFound = false
 
-	input_text = replace_text_numbers(input_text)
+	inputText = replaceTextNumbers(inputText)
 
-	for _, character := range input_text {
+	for _, character := range inputText {
 		if digit, err := strconv.Atoi(string(character)); err == nil {
-			if !first_digit_found {
-				first_digit_found = true
-				first_digit = digit
+			if !firstDigitFound {
+				firstDigitFound = true
+				firstDigit = digit
 			}
-			last_digit = digit
+			lastDigit = digit
 		}
 	}
 
-	return first_digit, last_digit
+	return firstDigit, lastDigit
 }
 
-func replace_text_numbers(input_text string) string {
-	var lowest_idx int = -1
-	var elem_idx int = -1
-	var lowest_idx_num = ""
-	var lowest_idx_text = ""
-	var found_num bool = false
-
-	num_text_arr := [10]string{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
+func replaceTextNumbers(inputText string) string {
+	var lowestIdx int = -1
+	var elemIdx int = -1
+	var lowestIdxNum = ""
+	var foundNum bool = false
+	numTextArr := [10]string{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 
 	for {
-		for index, element := range num_text_arr { 
-			if strings.Contains(input_text, element) {
-				elem_idx = strings.Index(input_text, element)
-				if lowest_idx == -1 {
-					found_num = true
-					lowest_idx = elem_idx
-					lowest_idx_num = strconv.Itoa(index)
-					lowest_idx_text = element
-				} else if lowest_idx > elem_idx {
-					lowest_idx = elem_idx
-					lowest_idx_num = strconv.Itoa(index)
-					lowest_idx_text = element
+		for index, element := range numTextArr { 
+			if strings.Contains(inputText, element) {
+				elemIdx = strings.Index(inputText, element)
+				if lowestIdx == -1 {
+					foundNum = true
+					lowestIdx = elemIdx
+					lowestIdxNum = strconv.Itoa(index)
+				} else if lowestIdx > elemIdx {
+					lowestIdx = elemIdx
+					lowestIdxNum = strconv.Itoa(index)
 				}
 			}
 		}
 
-		if found_num {
-			input_text = strings.Replace(input_text, lowest_idx_text, lowest_idx_num, 1)
-			found_num = false
-			lowest_idx = -1
+		if foundNum {
+			inputText = inputText[:lowestIdx] + lowestIdxNum + inputText[lowestIdx+1:]
+			foundNum = false
+			lowestIdx = -1
 		} else {
 			break
 		}
 	}
 
-	return input_text
+	return inputText
 }
 
-func create_calibration_number(first_digit int, last_digit int) int {
-	return first_digit*10 + last_digit
+func createCalNum(firstDigit int, lastDigit int) int {
+	return firstDigit*10 + lastDigit
 }
 
-func run_part_1_test(text_input string) {
-	first_digit, last_digit := get_first_last_digits(text_input)
-	calibration_number := create_calibration_number(first_digit, last_digit)
-	fmt.Printf("%s, %d\n", text_input, calibration_number)
+func runPart1Test(textInput string) {
+	firstDigit, lastDigit := getFirstLastDigits(textInput)
+	calNum := createCalNum(firstDigit, lastDigit)
+	fmt.Printf("%s, %d\n", textInput, calNum)
 }
 
-func run_part_1() {
-	content, err := ioutil.ReadFile(test_file)
+func runPart1() {
+	content, err := ioutil.ReadFile(testFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	input_text := string(content)
+	inputText := string(content)
 
-	var running_total int = 0
+	var runningTotal int = 0
 
-	scanner := bufio.NewScanner(strings.NewReader(input_text))
+	scanner := bufio.NewScanner(strings.NewReader(inputText))
 	for scanner.Scan() {
 		textLine := scanner.Text()
-		first_digit, last_digit := get_first_last_digits(textLine)
-		calibration_number := create_calibration_number(first_digit, last_digit)
+		firstDigit, lastDigit := getFirstLastDigits(textLine)
+		calNum := createCalNum(firstDigit, lastDigit)
 
-		running_total += calibration_number
+		runningTotal += calNum
 	}
-	fmt.Printf("Part 1: %d\n", running_total)
+	fmt.Printf("Part 1: %d\n", runningTotal)
 }
 
-func run_part_2_test(text_input string) {
-	first_digit, last_digit := get_first_last_digits_with_text(text_input)
-	calibration_number := create_calibration_number(first_digit, last_digit)
-	fmt.Printf("%s, %d\n", text_input, calibration_number)
+func runPart2Test(textInput string) {
+	firstDigit, lastDigit := getFirstLastDigitsWithText(textInput)
+	calNum := createCalNum(firstDigit, lastDigit)
+	fmt.Printf("%s, %d\n", textInput, calNum)
 }
 
-func run_part_2() {
-	content, err := ioutil.ReadFile(test_file)
+func runPart2() {
+	content, err := ioutil.ReadFile(testFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	input_text := string(content)
+	inputText := string(content)
 
-	var running_total int = 0
+	var runningTotal int = 0
 
-	scanner := bufio.NewScanner(strings.NewReader(input_text))
+	scanner := bufio.NewScanner(strings.NewReader(inputText))
 	for scanner.Scan() {
 		textLine := scanner.Text()
-		first_digit, last_digit := get_first_last_digits_with_text(textLine)
-		calibration_number := create_calibration_number(first_digit, last_digit)
+		firstDigit, lastDigit := getFirstLastDigitsWithText(textLine)
+		calNum := createCalNum(firstDigit, lastDigit)
 
-		fmt.Printf("Text Input: %s - Calibration Number: %d\n", textLine, calibration_number)
+		fmt.Printf("Text Input: %s - Calibration Number: %d\n", textLine, calNum)
 
-		running_total += calibration_number
+		runningTotal += calNum
 	}
-	fmt.Printf("Part 2: %d\n", running_total)
+	fmt.Printf("Part 2: %d\n", runningTotal)
 }
 
 func main() {
 	fmt.Println("Part 1 Testing")
-	run_part_1_test(test_1_1)
-	run_part_1_test(test_1_2)
-	run_part_1_test(test_1_3)
-	run_part_1_test(test_1_4)
+	runPart1Test(test11)
+	runPart1Test(test12)
+	runPart1Test(test13)
+	runPart1Test(test14)
 
 	fmt.Println()
-	run_part_1()
+	runPart1()
 	fmt.Println()
 
 	fmt.Println("Part 2 Testing")
-	run_part_2_test(test_2_1)
-	run_part_2_test(test_2_2)
-	run_part_2_test(test_2_3)
-	run_part_2_test(test_2_4)
-	run_part_2_test(test_2_5)
-	run_part_2_test(test_2_6)
-	run_part_2_test(test_2_7)
+	runPart2Test(test21)
+	runPart2Test(test22)
+	runPart2Test(test23)
+	runPart2Test(test24)
+	runPart2Test(test25)
+	runPart2Test(test26)
+	runPart2Test(test27)
+	runPart2Test("oneight")
 
 	fmt.Println()
-	run_part_2()
-
-	
+	runPart2()
 }
